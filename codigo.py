@@ -1,5 +1,6 @@
 import json
-import random
+import os
+import time
 
 nome_arquivo = 'animes.json'
 
@@ -7,7 +8,6 @@ def lerArquivo() -> list:
     arq = open(nome_arquivo, 'r', encoding='utf-8')
     data = arq.read()
     return json.loads(data)
-
 
 def salvarArquivo(animes: list):
     arq = open(nome_arquivo, 'w+', encoding='utf-8')
@@ -17,108 +17,157 @@ def salvarArquivo(animes: list):
 
 def gerarid():
     data = lerArquivo()
-    datalista = []
     if len(data) == 0:
-        return 0
-    else:
-        for i in range(len(data)):
-            datalista.append(data[i]['id'])
-    return max(datalista)
-    
+        return 1
+    return data[-1]["_Anime__id"] + 1
 
-def cadastrar() -> dict:
-    anime = {}
-    anime['id'] = gerarid()+1
-    anime['nome'] = str(input('Nome do anime: '))
-    anime['genero'] = str(input('Gênero do anime: '))
-    anime['lancamento'] = str(input('Data de lançamento do anime: '))
-    anime['autor'] = str(input('Autor do anime: '))
-    anime['status'] = str(input('Status: '))
-    anime['origem'] = str(input('Origem do anime: '))
-    
+class Anime:
+    __id: int
+    __nome: str
+    __genero: str
+    __lancamento: str
+    __autor: str    
+    __status: str
+    __origem: str
 
-    animes = lerArquivo()
-    animes.append(anime)
-    salvarArquivo(animes)
+    def getId(self):
+        return self.__id
 
-def vertodos() -> list:
-    arq = open(nome_arquivo, 'r', encoding='utf-8')
-    data = arq.read()
-    animes = json.loads(data)
+    def setId(self, id):
+        self.__id = id
 
-    for anime in animes:
-        print(f'ID: {anime["id"]}')
-        print(f'Nome: {anime["nome"]}')
-        print(f'Gênero: {anime["genero"]}')
-        print(f'Lançamento: {anime["lancamento"]}')
-        print(f'autor: {anime["autor"]}')
-        print(f'Status: {anime["status"]}')
-        print(f'Origem: {anime["origem"]}')
-        print(50 * '*')
+    def getNome(self):
+        return self.__nome
 
-    salvarArquivo(animes)
+    def setNome(self, nome):
+        self.__nome = nome
 
+    def getGenero(self):
+        return self.__genero
+
+    def setGenero(self, genero):
+        self.__genero = genero
+
+    def getLancamento(self):
+        return self.__lancamento
+
+    def setLancamento(self, lancamento):
+        self.__lancamento = lancamento
+
+    def getAutor(self):
+        return self.__autor
+
+    def setAutor(self, autor):
+        self.__autor = autor
+
+    def getStatus(self):
+        return self.__status
+
+    def setStatus(self, status):
+        self.__id = status
+
+    def getOrigem(self):
+        return self.__origem
+
+    def setOrigem(self, origem):
+        self.__origem = origem
+
+    def cadastrar(self) -> dict:
+        os.system('cls')
+        self.setId(gerarid())
+        self.setNome(str(input('Nome do anime: ')))
+        self.setGenero(str(input('Gênero do anime: ')))
+        self.setLancamento(str(input('Data de lançamento do anime: ')))
+        self.setAutor(str(input('Autor do anime: ')))
+        self.setStatus(str(input('Status: ')))
+        self.setOrigem(str(input('Origem do anime: ')))
+        print('''-----------------------------
+    Anime cadastrado com sucesso!''')
+        time.sleep(1)
+        animes = lerArquivo()
+        animes.append(self.__dict__)
+        salvarArquivo(animes)
+
+    def vertodos() -> list:
+        arq = open(nome_arquivo, 'r', encoding='utf-8')
+        data = arq.read()
+        animes = json.loads(data)
+
+        print('--------------------------------------------------')
+        print('Este são todos os animes que estão no sistema!')
+        print('--------------------------------------------------')
+        for anime in animes:
+            print(f'ID: {anime["_Anime__id"]}')
+            print(f'Nome: {anime["_Anime__nome"]}')
+            print(f'Gênero: {anime["_Anime__genero"]}')
+            print(f'Lançamento: {anime["_Anime__lancamento"]}')
+            print(f'autor: {anime["_Anime__autor"]}')
+            print(f'Status: {anime["status"]}')
+            print(f'Origem: {anime["_Anime__origem"]}')
+            print('--------------------------------------------------')
+
+        salvarArquivo(animes)
         
-def deletaranime() -> list:
-    animes = lerArquivo()
+    def deletaranime() -> list:
+        os.system('cls')
+        animes = lerArquivo()
 
-    for anime in animes:
-        print(f'ID: {anime["id"]} - {anime["nome"]}')
-        print(50 * '-')
-    
-    selecionar = int(input('Digite o ID do anime que deseja deletar!\n'))
-    
-    for i in range(len(animes)):
-        if animes[i]['id'] == selecionar:
-            print(f'Anime deletado!')
-            del(animes[i])
-            break
+        for anime in animes:
+            print(f'ID: {anime["id"]} - {anime["nome"]}')
+            print(50 * '-')
         
-    salvarArquivo(animes)
+        selecionar = int(input('Digite o ID do anime que deseja deletar: '))
+        
+        for i in range(len(animes)):
+            if animes[i]['id'] == selecionar:
+                print(f'Anime deletado!')
+                del(animes[i])
+                break
+            
+        salvarArquivo(animes)
 
-def alterarAnime():
-    animes = lerArquivo()
+    def alterarAnime():
+        os.system('cls')
+        animes = lerArquivo()
 
-    for anime in animes:
-        print(f'ID: {anime["id"]} - {anime["nome"]}')
-        print(50 * '-')
+        for anime in animes:
+            print(f'ID: {anime["id"]} - {anime["nome"]}')
+            print(50 * '-')
 
-    selecionar = int(input('Digite o ID do anime que deseja alterar!\n'))
-    menu = int(input('''Selecione o atributo que deseja alterar!
+        selecionar = int(input('Digite o ID do anime que deseja alterar!\n'))
+        menu = int(input('''Selecione o atributo que deseja alterar!
     1 - nome
     2 - genero
     3 - lancamento
     4 - autor
     5 - status
     6 - origem
-    
+        
     Digite a opção desejada: '''))
 
-    
-    
-    for i in range(len(animes)):
-        if animes[i]['id'] == selecionar:
-            if menu == 1:
-                animes[i]['nome'] = input('Digite o novo nome: ')
-            if menu == 2:
-                animes[i]['genero'] = input('Digite o novo genero: ')
-            if menu == 3:
-                animes[i]['lancamento'] = input('Digite a nova data de lançamento: ')
-            if menu == 4:
-                animes[i]['autor'] = input('Digite o novo autor: ')
-            if menu == 5:
-                animes[i]['status'] = input('Digite o novo status: ')
-            if menu == 6:
-                animes[i]['origem'] = input('Digite a nova origem: ')
+        
+        
+        for i in range(len(animes)):
+            if animes[i]['id'] == selecionar:
+                if menu == 1:
+                    animes[i]['nome'] = input('Digite o novo nome: ')
+                if menu == 2:
+                    animes[i]['genero'] = input('Digite o novo genero: ')
+                if menu == 3:
+                    animes[i]['lancamento'] = input('Digite a nova data de lançamento: ')
+                if menu == 4:
+                    animes[i]['autor'] = input('Digite o novo autor: ')
+                if menu == 5:
+                    animes[i]['status'] = input('Digite o novo status: ')
+                if menu == 6:
+                    animes[i]['origem'] = input('Digite a nova origem: ')
 
-    salvarArquivo(animes)
+        salvarArquivo(animes)
 
-def selecionarAnime():
-    animes = lerArquivo()
+    def selecionarAnime():
+        animes = lerArquivo()
 
-    vertodos()
-
-    menu = int(input('''Selecione o atributo do anime que deseja ver os detalhes!\n'
+        propriedade = int(input('''Selecione o atributo do anime que deseja ver os detalhes!\n
     1 - ID
     2 - Nome
     3 - Gênero
@@ -126,49 +175,33 @@ def selecionarAnime():
     5 - Autor
     6 - Status
     7 - Origem
-    
+        
     Digite a opção desejada: '''))
+        valor = input("Digite a resposta da opção que desejou: ")
 
-    
-    while True:
-        if menu == 1:
-            recebido = int(input('Digite o ID do anime desejado: '))
-            for i in range(len(animes)):
-                if animes['id'] == recebido:
-                    print(animes[i])
-                    break
-                else:
-                    print('Anime não encontrado! Tente novamente.')
-        if menu == 2:
-            recebido = input('Digite o nome: ')
-        if menu == 3:
-            recebido = input('Digite o gênero: ')
-        if menu == 4:
-            recebido = input('Digite a data de lançamento(dd/mm/aaaa): ')
-        if menu == 5:
-            recebido = input('Digite o autor: ')
-        if menu == 6:
-            recebido = input('Digite o status: ')
-        if menu == 7:
-            recebido = input('Digite a origem: ')
+        if propriedade == 1:
+            propriedade = 'id'
+        elif propriedade == 2:
+            propriedade = 'nome'
+        elif propriedade == 3:
+            propriedade = 'genero'
+        elif propriedade == 4:
+            propriedade = 'lancamento'
+        elif propriedade == 5:
+            propriedade = 'autor'
+        elif propriedade == 6:
+            propriedade = 'atatus'
+        elif propriedade == 7:
+            propriedade = 'origem'
+        
+        cont = 0
+        while True:
+            for anime in animes:
+                if str(anime[propriedade]) == valor:
+                    print(anime)
+                    cont += 1
+            if cont == 0:
+                print('Opção inválida!')
+            break
 
-    salvarArquivo(animes)
-
-# def selecionarAnime(propriedade, valor):
-#     if propriedade == 1:
-#         propriedade = 'id'
-#     elif propriedade == 2:
-#         propriedade = 'nome'
-#     animes = lerArquivo()
-
-#     for anime in animes:
-#         if anime[propriedade] == valor:
-#             return anime
-
-#     return None
-
-# anime = selecionarAnime('nome', 'José do Teste')
-# if None != anime:
-#     printarAnime(anime)
-# else:
-#     print("hsduhsuhdfbusf")
+anime = Anime()
