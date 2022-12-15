@@ -16,15 +16,15 @@ while True:
     print(50 * '*')
     funcao = int(input('Digite o número da opção que desejar: '))
     if funcao == 1:
-        cadastrar()
+        anime.cadastrar()
     elif funcao == 2:
-        alterarAnime()
+        anime.alterarAnime()
     elif funcao == 3:
-        deletaranime()
+        anime.deletaranime()
     elif funcao == 4:
-        selecionarAnime()
+        anime.selecionarAnime()
     elif funcao == 5:
-        vertodos()
+        anime.vertodos()
     elif funcao == 6:
         break
     else:

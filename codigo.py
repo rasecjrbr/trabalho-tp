@@ -19,7 +19,8 @@ def gerarid():
     data = lerArquivo()
     if len(data) == 0:
         return 1
-    return data[-1]["_Anime__id"] + 1
+    else:
+        return data[-1]["_Anime__id"] + 1
 
 class Anime:
     __id: int
@@ -64,7 +65,7 @@ class Anime:
         return self.__status
 
     def setStatus(self, status):
-        self.__id = status
+        self.__status = status
 
     def getOrigem(self):
         return self.__origem
